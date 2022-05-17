@@ -1,7 +1,6 @@
-;  4 MHz kristal icin her bir komut 1mikrosn
-; iç içe dongu ile yaklas?k 1sn gecikme olur. 
+;  4 MHz kristal 
 
-	list		p=16f877A	; hangi pic
+	list		p=16f877A	
 	#include	<p16f877A.inc>		
 	;__CONFIG _CP_OFF & _WDT_OFF & _BODEN_OFF & _PWRTE_ON & _XT_OSC & _WRT_OFF & _LVP_ON & _CPD_OFF
 	__CONFIG H'3F31'
@@ -15,44 +14,43 @@ SOLSAG		EQU	0x23
 ;EGER ICINDEKI DEGER 0x00 ISE SOLA 0x01 ISE SAGA
 
 
-;***** Kesme durumunda kaydedilmesi gereken SFR ler icin kullanilacak yardimci degiskenler
 w_temp		EQU	0x7D		
 status_temp	EQU	0x7E		
 pclath_temp	EQU	0x7F					
 
 
 ;********************************************************************************************
-	ORG     0x000             	; Baslama vektoru
+	ORG     0x000             	
 
-	nop			  			  	; ICD ozelliginin aktif edilmesi icin gereken bekleme 
-  	goto    BASLA              	; baslama etiketine gir
+	nop			  			  	
+  	goto    BASLA            	
 
 	
 ;**********************************************************************************************
-	ORG     0x004             	; kesme vektoru 
+	ORG     0x004             	
 
-	movwf   w_temp            	; W n?n yedegini al
-	movf	STATUS,w          	; Status un yedegini almak icin onu once W ya al
-	movwf	status_temp       	; Status u yedek register '?na al
-	movf	PCLATH,w	  		; PCLATH '? yedeklemek icin onu once W 'ya al
-	movwf	pclath_temp	  		; PCLATH '? yedek register a al
+	movwf   w_temp            	
+	movf	STATUS,w          	
+	movwf	status_temp       	
+	movf	PCLATH,w	  		
+	movwf	pclath_temp	  		
 
-	; gerekli kodlar
+	
 
-	movf	pclath_temp,w	  	; Geri donmeden once tum yedekleri geri yukle
+	movf	pclath_temp,w	  	
 	movwf	PCLATH		  		
 	movf    status_temp,w     	
 	movwf	STATUS            	
 	swapf   w_temp,f
 	swapf   w_temp,w          	
-	retfie                    	; Kesme 'den don
+	retfie                    	
 ;***********************************************************************************************
 
 	
-;*********************************************TMR KULLANMADAN GECIKME***************************************************
+;************************************************************************************************
 
 
-GECIKME				; (herbir komut 4mhz de 1mikrosn) = 1 sn GEC?KME (yakla??k)
+GECIKME				
 	MOVLW	0x08
 	MOVWF	GECIKME1	
 	
@@ -77,7 +75,7 @@ DONGU1
 	
 ;*********************************************************************************	
 SSDON
-	BTFSC	SOLSAG,0	    ;EGER SAGSOL=0x00 ?SE SOLA 1 ?SE SAGA DON
+	BTFSC	SOLSAG,0	    ;EGER SAGSOL=0x00 ISE SOLA 1 ISE SAGA DON
 	GOTO	SAGAGIT
 	GOTO	SOLAGIT
 SAGAGIT	RRF	PORTB
@@ -106,7 +104,7 @@ SAGKONTROL
 BASLA
 	BCF	STATUS,C	    ; RRF VE RLF ELDE B?T? (C) ?LE DONUS YAPAR BU NEDENLE BA?TA ELDE B?T? SIFIRLANMALI
 	CLRF	PORTB		    ; portb de bir?ey olms?n
-	BANKSEL	TRISB		    ; portb nin hepsini ç?k?? yap
+	BANKSEL	TRISB		    ; portb nin hepsini Ã§?k?? yap
 	CLRF	TRISB
 	
 	BCF	STATUS,RP0	    ; Portb ye deger yuklemek icin bank1 e gec
